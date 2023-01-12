@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+<style>
+  ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: white;
+    opacity: 1; /* Firefox */
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: white;
+  }
+  
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: white;
+  }
+</style>
+
+<!--CTA-->
+<form action="saveexcel" method="post" enctype="multipart/form-data">
+   {% csrf_token %}
+<div class="container py-5">
+   <div class="row">
+     <div class="col-sm-12 col-md-12 col-lg-6 pb-4">
+       <h1 class="display-4 font-weight-bold">DataMatrix Code Generation</h1>
+       <h5>A data matrix code is a 2D code that is made of black and white cells that are typically arranged in a square pattern (although rectangular patterns also exist). The number of rows and columns increases with the amount of information stored in the code, which is limited to 2,335 alphanumeric characters. The L-shape that follows its borders is its finder pattern, which is used by scanners to recognize and read the code. The use of data matrix codes is standardized thanks to the ISO/IEC 16022 international standard.</h5>
+       <input type="file"
+       accept=".xls,.xlsx"
+       title="Upload excel file"
+       name="excel_file"
+       style="border: 1px solid black; padding: 5px;"
+       required="required"
+       class="btn btn-primary mt-2">
+       <input type="text" name="cname" placeholder="Enter Column Name" class="btn btn-primary mt-2" required="required"> 
+       <input type="submit"
+      value="Generate DataMatrix"
+      class="btn btn-primary mt-2">
+      
+     </div>
+     <div class="col-sm-12 col-md-12 col-lg-6">
+      <img src="{% static 'Dmatrix-sample.jpg' %}" alt="Headphones">
+    </div>
+   </div>
+ </div>
+</form>
+
+
+{%endblock%}

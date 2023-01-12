@@ -1,0 +1,77 @@
+
+{% extends 'basedownloadsvg.html' %}
+{% load static %}
+{% block content %}
+<style>
+    #status{
+        font-size: 100px;
+    }
+</style>
+<script src="{% static 'datamatrix.min.js' %}"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script>
+      // vanilla JS version
+  function downloadsvg(){
+    totalCases= {{length}}
+    const para = document.createElement("p");
+    const node = document.createTextNode("Downloading started... TOTAL CASES :"+ String(totalCases));
+    para.appendChild(node);
+    para.setAttribute("id", "status");
+    var progUpdate = document.getElementById("progUpdate");
+    progUpdate.appendChild(para)
+    console.log(totalCases)
+    {% for pincode in pincodes %}
+        var pincodejs = {{pincode}}
+        var svgNode = DATAMatrix(String(pincodejs))
+        console.log(pincodejs)
+        download(svgNode,pincodejs)
+    {% endfor %}
+  }
+  const download = (svgNode,pincode) => {
+    // fetch SVG-rendered image as a blob object
+    const svg = svgNode;
+    const data = (new XMLSerializer()).serializeToString(svg);
+    const svgBlob = new Blob([data], {
+      type: 'image/svg+xml;charset=utf-8'
+    });
+  
+    // convert the blob object to a dedicated URL
+    const url = URL.createObjectURL(svgBlob);
+  
+    // load the SVG blob to a flesh image object
+    const img = new Image();
+    img.addEventListener('load', () => {
+      // draw the image on an ad-hoc canvas
+      const bbox = svg.getBBox();
+  
+      const canvas = document.createElement('canvas');
+      canvas.width = 10000;
+      canvas.height = 10000;
+  
+      const context = canvas.getContext('2d');
+      context.drawImage(img, 0, 0, 10000, 10000);
+  
+      URL.revokeObjectURL(url);
+  
+      // trigger a synthetic download operation with a temporary link
+      const a = document.createElement('a');
+      a.download = pincode+'.png';
+      document.body.appendChild(a);
+      a.href = canvas.toDataURL();
+      a.click();
+      a.remove();
+    });
+    img.src = url;
+  };
+
+</script>
+
+
+
+<div id="progUpdate" class="col-xs-12">
+    	<!-- Success Message -->
+</div>
+
+
+
+{%endblock%}
